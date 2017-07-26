@@ -20,28 +20,29 @@ package MyCode
 
 import spinal.core._
 import spinal.lib._
+import spinal.lib.experimental.math._
 
 class MyTopLevel extends Component {
   val io = new Bundle {
     val cond0 = in  Bool
     val cond1 = in  Bool
     val flag  = out Bool
-    val state = out UInt(8 bits)
+    val state = out UInt (16 bits)
   }
-  val counter = Reg(UInt(8 bits)) init(0)
+  val counter = Reg(Floating16()) init(0)
 
   when(io.cond0){
-    counter := counter + 1
+    counter := counter + BigDecimal ("1.0")
   }
 
-  io.state := counter
-  io.flag  := (counter === 0) | io.cond1
+  io.state := counter.asBits.asUInt
+  io.flag  := (counter.asBits.asUInt === 0) | io.cond1
 }
 
 object MyTopLevel {
   def main(args: Array[String]) {
-    SpinalVhdl(new MyTopLevel)
-    //SpinalVerilog(new MyTopLevel)
+    //SpinalVhdl(new MyTopLevel)
+    SpinalVerilog(new MyTopLevel)
   }
 }
 
